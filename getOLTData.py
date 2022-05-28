@@ -12,7 +12,7 @@ def getOLTData(ip, user, password, port):
     placas = []
     data = []
     pons = []
-    a_sinal=[]
+    a_sinal = []
     DataReturn = {
         'status': "sucesso",
         'consulta': "sucesso",
@@ -56,7 +56,7 @@ def getOLTData(ip, user, password, port):
             time.sleep(.3)
 
     for board in placas:
-        tn.write("display board 0/{}\n".format(board))
+        tn.write("display board 0/{}\n".format(board).encode('utf-8'))
         board_return = tn.read_until('Control flag'.encode('utf-8'),
                                      3).decode('utf-8').splitlines()
         for linha in board_return:
@@ -83,31 +83,24 @@ def getOLTData(ip, user, password, port):
         f = pon.split('/')[0]
         s = pon.split('/')[1]
         p = pon.split('/')[2]
-        tn.write("interface gpon {}/{}\n".format(f, s))
+        tn.write("interface gpon {}/{}\n".format(f, s).encode('utf-8'))
         time.sleep(.3)
-        tn.write("display ont optical-info {} all\n".format(p))
+        tn.write("display ont optical-info {} all\n".format(p).encode('utf-8'))
         sinalList_return = tn.read_until('Control flag'.encode('utf-8'),
-        
                                          3).decode('utf-8').splitlines()
         print(pon)
         for linha in sinalList_return:
-            
+
             if re.search(r'.*-[0-9]+\.[0-9]+', linha):
-                srt_sinal=float(linha.split('-')[1].split(' ')[0])
+                srt_sinal = float(linha.split('-')[1].split(' ')[0])
                 a_sinal.append(srt_sinal)
-            if len(a_sinal)>0:
-                media=0
+            if len(a_sinal) > 0:
+                media = 0
                 for sinal in a_sinal:
-                    media+sinal
-                media=(media/int(len(a_sinal)))
+                    media + sinal
+                media = (media / int(len(a_sinal)))
                 print(media)
-            a_sinal=[]    
-
-
-
-
-            
-
+            a_sinal = []
 
     # Fechando conexao com a OLT
     tn.write(b"quit\n")
