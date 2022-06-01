@@ -6,16 +6,14 @@ import os
 
 
 def getOLTData(ip, user, password, port, hostname):
-    start_time = time.time()
-    placas = []
+    #    start_time = time.time()
     pons = []
-    totalProvisionado=0
-    totalOnline=0
+    totalProvisionado = 0
+    totalOnline = 0
     try:
         tn = telnetlib.Telnet(ip, port, 10)
     except Exception as e:
         return
-               
 
     tn.read_until(b"name:")
     tn.write(user.encode('utf-8') + b"\n")
@@ -32,46 +30,37 @@ def getOLTData(ip, user, password, port, hostname):
     time.sleep(.3)
     tn.write(b"scroll\n")
     time.sleep(.3)
-    tn.write(b"display current-configuration | include interface gpon\n")
-    time.sleep(15)
+    tn.write(b"display ont info 0 all | include port 0\n")
+    time.sleep(20)
 
-    gponInterface_return = tn.read_until('Control flag'.encode('utf-8'),
-                                         3).decode('utf-8').splitlines()
-    
-    for linha in gponInterface_return:
-        if "interface gpon 0" in linha:
-            srt_placa = linha.split('/')[1].lstrip().rstrip('\r')
-            placas.append(srt_placa)
-            time.sleep(.3)
+    board_return = tn.read_until('Control flag'.encode('utf-8'),
+                                 3).decode('utf-8').splitlines()
 
-    for board in placas:
-        tn.write("display board 0/{}\n".format(board).encode('utf-8'))
-        time.sleep(35)
-        board_return = tn.read_until('Control flag'.encode('utf-8'),
-                                     3).decode('utf-8').splitlines()
-        
-        for linha in board_return:
-            if "port 0/" in linha:
-                srt_pon = linha.split(',')
-                pon = srt_pon[0].split('port')[1].lstrip().rstrip(
-                    '\r').replace(' ', '')
-                onu_provisionada = int(
-                    srt_pon[1].split(':')[1].lstrip().rstrip('\r'))
-                onu_online = int(
-                    srt_pon[2].split(':')[1].lstrip().rstrip('\r'))
+    for linha in board_return:
+        if "port 0/" in linha:
+            srt_pon = linha.split(',')
+            pon = srt_pon[0].split('port')[1].lstrip().rstrip('\r').replace(
+                ' ', '')
+            onu_provisionada = int(
+                srt_pon[1].split(':')[1].lstrip().rstrip('\r'))
+            onu_online = int(srt_pon[2].split(':')[1].lstrip().rstrip('\r'))
 
-                totalProvisionado=(totalProvisionado+onu_provisionada)
-                totalOnline=(totalOnline+onu_online)
-                
-                os.system('zabbix_sender -z zabbix -s "{}" -k OntOnline.[{}] -o {}'.format(hostname, pon, onu_online))
-                time.sleep(1)
-                pons.append(pon)
+            totalProvisionado = (totalProvisionado + onu_provisionada)
+            totalOnline = (totalOnline + onu_online)
 
-    os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntActive -o {}'.format(hostname, totalProvisionado))
-    time.sleep(2)
-    os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntOnline -o {}'.format(hostname, totalOnline))
-    time.sleep(2)
-                     
+            os.system(
+                'zabbix_sender -z zabbix -s "{}" -k OntOnline.[{}] -o {}'.
+                format(hostname, pon, onu_online))
+            time.sleep(1)
+            pons.append(pon)
+
+    os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntActive -o {}'.format(
+        hostname, totalProvisionado))
+    time.sleep(1)
+    os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntOnline -o {}'.format(
+        hostname, totalOnline))
+    time.sleep(1)
+
     # Fechando conexao com a OLT
     tn.write(b"quit\n")
     time.sleep(.3)
@@ -82,12 +71,11 @@ def getOLTData(ip, user, password, port, hostname):
     tn.write("y".encode('utf-8') + b"\n")
     time.sleep(.3)
     tn.close()
-    finish_time = time.time()
-    tempo_gasto = (finish_time - start_time)
-    print('O Script foi executado em {} segundos'.format(tempo_gasto))
 
-    
 
+#   finish_time = time.time()
+#   tempo_gasto = (finish_time - start_time)
+#   print('O Script foi executado em {} segundos'.format(tempo_gasto))
 
 ip = sys.argv[1]
 user = sys.argv[2]
