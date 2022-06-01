@@ -7,7 +7,6 @@ import os
 
 def getOLTData(ip, user, password, port, hostname):
     #    start_time = time.time()
-    pons = []
     totalProvisionado = 0
     totalOnline = 0
     try:
@@ -52,7 +51,6 @@ def getOLTData(ip, user, password, port, hostname):
                 'zabbix_sender -z zabbix -s "{}" -k OntOnline.[{}] -o {}'.
                 format(hostname, pon, onu_online))
             time.sleep(1)
-            pons.append(pon)
 
     os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntActive -o {}'.format(
         hostname, totalProvisionado))
