@@ -12,10 +12,10 @@ def CronModify(ip, user, password, port, hostname):
             return
 
     os.popen(
-        'echo "*/6 * * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUSinal.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
+        'echo "27 */2 * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUSinal.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
         .format(ip, user, password, port, hostname))
     os.popen(
-        'echo "27 */2 * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUOnline.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
+        'echo "*/6 * * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUOnline.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
         .format(ip, user, password, port, hostname))
 
 
