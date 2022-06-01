@@ -3,27 +3,38 @@ import os
 import sys
 import json
 
-export = {"data": []}
 
-IP = sys.argv[1]
-COMMUNITY = sys.argv[2]
-OID = '1.3.6.1.2.1.31.1.1.1.1'
+def main(ip, community, oid, hostname, user, password, port):
 
-HOSTNAME = sys.argv[3]
-USER = sys.argv[4]
-PASS = sys.argv[5]
-PORT = sys.argv[6]
+    export = {"data": []}
 
+    cmd = 'snmpwalk -v 2c -c {} {} {}| grep -i "gpon"'.format(community, ip, oid)
+    return_snmpwalk = os.popen(cmd).read().splitlines()
 
-cmd = "snmpwalk -v 2c -c {} {} {}".format(COMMUNITY, IP, OID)
-return_snmpwalk = os.popen(cmd).read().splitlines()
-
-for linha in return_snmpwalk:
-    if "GPON" in linha:
+    for linha in return_snmpwalk:
         pon = linha.split('GPON')[1].replace(' ', '').replace('"', '')
-        export["data"].append({"{#PONNAME}": pon})
+        index = linha.split('=')[0].split('.')[11].replace(' ', '')
+        cmd_alias='snmpwalk -v 2c -c {} {} 1.3.6.1.2.1.31.1.1.1.18.{}'.format(community, ip, index)
+        alias_return = os.popen(cmd_alias).read()
+        alias=""
+        if "STRING" in alias_return:
+            alias=alias_return.split(':')[1].replace(' ', '').replace('"', '').lstrip().rstrip()
+        export["data"].append({"{#PONNAME}": pon, "{#PONALIAS}":alias, "{#INDEX}":index})
+        
+
+    print(json.dumps(export))
+    return
 
 
-os.system('python3 /usr/lib/zabbix/externalscripts/getOLTData.py {} {} {} {} {} &'.format(IP, USER, PASS, PORT, HOSTNAME))
+ip = sys.argv[1]
+community = sys.argv[2]
+oid = '1.3.6.1.2.1.31.1.1.1.1'
+oid_alias ='1.3.6.1.2.1.31.1.1.1.18'
 
-print(json.dumps(export))
+hostname = sys.argv[3]
+user = sys.argv[4]
+password = sys.argv[5]
+port = sys.argv[6]
+
+main(ip, community, oid, hostname, user, password, port)
+
