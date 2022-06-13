@@ -15,7 +15,8 @@ chmod +x /usr/lib/zabbix/externalscripts/*.py
 #
 ```sh
 sudo echo "#ARQUIVO PARA AGENDAMENTO TEMPLATE OLT">/etc/cron.d/TemplateOLT
-sudo chown zabbix. /etc/cron.d/TemplateOLT
+sudo chown root:zabbix /etc/cron.d/TemplateOLT
+sudo chmod 777 /etc/cron.d/TemplateOLT
 service cron restart
 ```
 #
