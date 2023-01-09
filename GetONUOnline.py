@@ -62,6 +62,9 @@ def getOLTData(ip, user, password, port, hostname):
     os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntOnline -o {}'.format(
         hostname, totalOnline))
     time.sleep(1)
+    os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntOffline -o {}'.format(
+        hostname, totalProvisionado-totalOnline))
+    time.sleep(1)
 
     # Fechando conexao com a OLT
     tn.write(b"quit\n")
