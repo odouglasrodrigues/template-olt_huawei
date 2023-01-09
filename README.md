@@ -6,6 +6,7 @@
 #### Faça a instalação das dependencias necessárias
 
 ```sh
+apt update
 apt install git snmp python3 zabbix-sender -y
 
 ```
@@ -14,7 +15,7 @@ apt install git snmp python3 zabbix-sender -y
 ```sh
 cd /tmp
 git clone https://github.com/odouglasrodrigues/template-olt_huawei
-cd template-olt-zte
+cd template-olt_huawei
 mv *.py /usr/lib/zabbix/externalscripts/
 
 
