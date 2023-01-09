@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2023-01-09T19:18:15Z</date>
+    <date>2023-01-09T20:50:09Z</date>
     <groups>
         <group>
             <uuid>eac079129ff6413db29219864380f455</uuid>
@@ -165,9 +165,10 @@
                         <item_prototype>
                             <uuid>b87c4d49cd8d4d57911abec798bd0942</uuid>
                             <name>ONUs Provisionadas - {#PONNAME}-({#PONALIAS})</name>
-                            <type>TRAP</type>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2011.6.128.1.1.2.21.1.16.{#INDEX}</snmp_oid>
                             <key>OntProvisioned.[{#PONNAME}]</key>
-                            <delay>0</delay>
+                            <delay>10m</delay>
                             <history>30d</history>
                             <trends>45d</trends>
                         </item_prototype>
