@@ -67,15 +67,15 @@ def getOLTData(ip, user, password, port, hostname):
             melhor = min(a_sinal, key=float) * (-1)
             pior = max(a_sinal, key=float) * (-1)
             os.system(
-                'zabbix_sender -z zabbix -s "{}" -k OntBestSinal.[{}] -o {}'.
+                'zabbix_sender -z 127.0.0.1 -s "{}" -k OntBestSinal.[{}] -o {}'.
                 format(hostname, pon, melhor))
             time.sleep(1)
             os.system(
-                'zabbix_sender -z zabbix -s "{}" -k OntPoorSinal.[{}] -o {}'.
+                'zabbix_sender -z 127.0.0.1 -s "{}" -k OntPoorSinal.[{}] -o {}'.
                 format(hostname, pon, pior))
             time.sleep(1)
             os.system(
-                'zabbix_sender -z zabbix -s "{}" -k OntMediaSinal.[{}] -o {}'.
+                'zabbix_sender -z 127.0.0.1 -s "{}" -k OntMediaSinal.[{}] -o {}'.
                 format(hostname, pon, media))
             time.sleep(1)
 
