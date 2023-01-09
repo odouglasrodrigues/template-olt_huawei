@@ -51,6 +51,10 @@ def getOLTData(ip, user, password, port, hostname):
                 'zabbix_sender -z zabbix -s "{}" -k OntOnline.[{}] -o {}'.
                 format(hostname, pon, onu_online))
             time.sleep(1)
+            os.system(
+                'zabbix_sender -z zabbix -s "{}" -k OntOffline.[{}] -o {}'.
+                format(hostname, pon, onu_provisionada-onu_online))
+            time.sleep(1)
 
     os.system('zabbix_sender -z zabbix -s "{}" -k TotalOntActive -o {}'.format(
         hostname, totalProvisionado))
