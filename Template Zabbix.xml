@@ -52,7 +52,7 @@
                     <uuid>1dd8263ca7d345189f4bdc667867a7b8</uuid>
                     <name>PONs Discovery</name>
                     <type>EXTERNAL</type>
-                    <key>GetPONName-ZTE.py[{HOST.CONN}, {$SNMP_COMMUNITY}, '{HOST.HOST}', {$OLT_USER_TELNET}, {$OLT_PASS_TELNET}, {$OLT_PORT_TELNET}]</key>
+                    <key>GetPONName.py[{HOST.CONN}, {$SNMP_COMMUNITY}, '{HOST.HOST}', {$OLT_USER_TELNET}, {$OLT_PASS_TELNET}, {$OLT_PORT_TELNET}]</key>
                     <delay>10m</delay>
                     <item_prototypes>
                         <item_prototype>
