@@ -61,4 +61,5 @@ user = sys.argv[4]
 password = sys.argv[5]
 port = sys.argv[6]
 
-main(ip, community)
+if __name__ == "__main__":
+    main(ip, community)
