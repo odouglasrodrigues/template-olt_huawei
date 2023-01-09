@@ -1,4 +1,4 @@
-# Monitoramento OLT ZTE
+# Monitoramento OLT HUAWEI
 ##### Zabbix 5.4+
 ##### HUAWEI R15+ 
 
