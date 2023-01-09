@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.4</version>
+    <date>2023-01-09T19:18:15Z</date>
+    <groups>
+        <group>
+            <uuid>eac079129ff6413db29219864380f455</uuid>
+            <name>Huawei</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>411b2a6cbc814e569499da21c337c62d</uuid>
+            <template>OLT Huawei - PON Monitoring</template>
+            <name>OLT Huawei - PON Monitoring</name>
+            <groups>
+                <group>
+                    <name>Huawei</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>e6e6c7e9922f44518b155bd3e7d0c3f2</uuid>
+                    <name>Total de ONUs Offline</name>
+                    <type>TRAP</type>
+                    <key>TotalOntOffline</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>45d</trends>
+                </item>
+                <item>
+                    <uuid>afb65dcd32d04ba984ea7d654beda84c</uuid>
+                    <name>Total de ONUs Online</name>
+                    <type>TRAP</type>
+                    <key>TotalOntOnline</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>45d</trends>
+                </item>
+                <item>
+                    <uuid>242971a092054744a561c09ed99660e0</uuid>
+                    <name>Total de ONUs Provisionadas</name>
+                    <type>TRAP</type>
+                    <key>TotalOntProvisioned</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>45d</trends>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>1dd8263ca7d345189f4bdc667867a7b8</uuid>
+                    <name>PONs Discovery</name>
+                    <type>EXTERNAL</type>
+                    <key>GetPONName-ZTE.py[{HOST.CONN}, {$SNMP_COMMUNITY}, '{HOST.HOST}', {$OLT_USER_TELNET}, {$OLT_PASS_TELNET}, {$OLT_PORT_TELNET}]</key>
+                    <delay>10m</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>569d67a5ef694d9bbaf614a9a540ddd3</uuid>
+                            <name>Melhor Sinal - {#PONNAME}-({#PONALIAS})</name>
+                            <type>TRAP</type>
+                            <key>OntBestSinal.[{#PONNAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>45d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>dBm</units>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>1c2e410358af40b0b6454e223c7f3b29</uuid>
+                            <name>Média de Sinal - {#PONNAME}-({#PONALIAS})</name>
+                            <type>TRAP</type>
+                            <key>OntMediaSinal.[{#PONNAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>45d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>dBm</units>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>754f9d2a061c431b8b99f84a191322fd</uuid>
+                                    <expression>last(/OLT Huawei - PON Monitoring/OntMediaSinal.[{#PONNAME}])&lt; -30</expression>
+                                    <name>Média de sinal PÉSSIMO  {ITEM.LASTVALUE} - {#PONNAME}-({#PONALIAS})</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>fa55096e18b14bad855d2f2134492a32</uuid>
+                                    <expression>last(/OLT Huawei - PON Monitoring/OntMediaSinal.[{#PONNAME}])&lt; -27</expression>
+                                    <name>Média de sinal RUIM  {ITEM.LASTVALUE} - {#PONNAME}-({#PONALIAS})</name>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Média de sinal PÉSSIMO  {ITEM.LASTVALUE} - {#PONNAME}-({#PONALIAS})</name>
+                                            <expression>last(/OLT Huawei - PON Monitoring/OntMediaSinal.[{#PONNAME}])&lt; -30</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>81ddd420717041468e37adde5c05669f</uuid>
+                            <name>ONUs Offline - {#PONNAME}-({#PONALIAS})</name>
+                            <type>TRAP</type>
+                            <key>OntOffline.[{#PONNAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>45d</trends>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>500bee8a8f2b4a869c38093be72c7dbf</uuid>
+                            <name>ONUs Online - {#PONNAME}-({#PONALIAS})</name>
+                            <type>TRAP</type>
+                            <key>OntOnline.[{#PONNAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>45d</trends>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>3dd1088a5c214f5996d1a0f806846839</uuid>
+                                    <expression>last(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}])&lt; avg(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}],60m)-10</expression>
+                                    <name>Queda de ONUs superior à 10  - {#PONNAME}-({#PONALIAS})</name>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Queda de ONUs superior à 30  - {#PONNAME}-({#PONALIAS})</name>
+                                            <expression>last(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}])&lt; avg(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}],60m)-30</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Queda de ONUs superior à 50  - {#PONNAME}-({#PONALIAS})</name>
+                                            <expression>last(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}])&lt; avg(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}],60m)-50</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>450072a731fe45c4a61fa6a0f86dcca0</uuid>
+                                    <expression>last(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}])&lt; avg(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}],60m)-30</expression>
+                                    <name>Queda de ONUs superior à 30  - {#PONNAME}-({#PONALIAS})</name>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Queda de ONUs superior à 50  - {#PONNAME}-({#PONALIAS})</name>
+                                            <expression>last(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}])&lt; avg(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}],60m)-50</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>695c1aab872f47b9b3cccf79728e1630</uuid>
+                                    <expression>last(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}])&lt; avg(/OLT Huawei - PON Monitoring/OntOnline.[{#PONNAME}],60m)-50</expression>
+                                    <name>Queda de ONUs superior à 50  - {#PONNAME}-({#PONALIAS})</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b03c40ba42a34679ba7fc3f645668825</uuid>
+                            <name>Pior Sinal - {#PONNAME}-({#PONALIAS})</name>
+                            <type>TRAP</type>
+                            <key>OntPoorSinal.[{#PONNAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>45d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>dBm</units>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b87c4d49cd8d4d57911abec798bd0942</uuid>
+                            <name>ONUs Provisionadas - {#PONNAME}-({#PONALIAS})</name>
+                            <type>TRAP</type>
+                            <key>OntProvisioned.[{#PONNAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>45d</trends>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>d738cfe519a24584946bfb190fa8ecc3</uuid>
+                            <name>Sinal PON - {#PONNAME}</name>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>00FF00</color>
+                                    <item>
+                                        <host>OLT Huawei - PON Monitoring</host>
+                                        <key>OntBestSinal.[{#PONNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>4000FF</color>
+                                    <item>
+                                        <host>OLT Huawei - PON Monitoring</host>
+                                        <key>OntMediaSinal.[{#PONNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>3</sortorder>
+                                    <color>FF0000</color>
+                                    <item>
+                                        <host>OLT Huawei - PON Monitoring</host>
+                                        <key>OntPoorSinal.[{#PONNAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$OLT_PASS_TELNET}</macro>
+                    <value>1qaz2wsx</value>
+                </macro>
+                <macro>
+                    <macro>{$OLT_PORT_TELNET}</macro>
+                    <value>23</value>
+                </macro>
+                <macro>
+                    <macro>{$OLT_USER_TELNET}</macro>
+                    <value>teste1</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <graphs>
+        <graph>
+            <uuid>04a2a833b2fd4304b10516c6af4a144b</uuid>
+            <name>ONUs Provisionadas x ONUs Online</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>BOLD_LINE</drawtype>
+                    <color>F63100</color>
+                    <item>
+                        <host>OLT Huawei - PON Monitoring</host>
+                        <key>TotalOntProvisioned</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>OLT Huawei - PON Monitoring</host>
+                        <key>TotalOntOnline</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+</zabbix_export>
