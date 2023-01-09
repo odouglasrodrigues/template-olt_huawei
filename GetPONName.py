@@ -10,13 +10,19 @@ def CronModify(ip, user, password, port, hostname):
     for cron in return_cron:
         if hostname in cron:
             return
+    os.system('sudo chmod 777 /etc/cron.d/TemplateOLT')
+    time.sleep(.4)
+    os.system(
+        'sudo echo "27 */2 * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUSignal.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
+        .format(ip, user, password, port, hostname))
+    time.sleep(.4)
+    os.system(
+        'sudo echo "*/6 * * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUOnline.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
+        .format(ip, user, password, port, hostname))
+    time.sleep(.4)
+    os.system('sudo chmod 644 /etc/cron.d/TemplateOLT')
 
-    os.popen(
-        'echo "27 */2 * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUSinal.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
-        .format(ip, user, password, port, hostname))
-    os.popen(
-        'echo "*/6 * * * * zabbix python3 -u /usr/lib/zabbix/externalscripts/GetONUOnline.py {} {} {} {} {} &">>/etc/cron.d/TemplateOLT'
-        .format(ip, user, password, port, hostname))
+
 
 
 def main(ip, community):
