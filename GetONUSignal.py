@@ -51,7 +51,7 @@ def getOLTData(ip, user, password, port, hostname):
         tn.write("interface gpon {}/{}\n".format(f, s).encode('utf-8'))
         time.sleep(.3)
         tn.write("display ont optical-info {} all\n".format(p).encode('utf-8'))
-        time.sleep(12)
+        time.sleep(18)
         sinalList_return = tn.read_until('Control flag'.encode('utf-8'),
                                          3).decode('utf-8').splitlines()
 
